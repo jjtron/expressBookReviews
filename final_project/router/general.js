@@ -32,8 +32,8 @@ public_users.get('/isbn/:isbn',function (req, res) {
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   let booksByAuthor = [];
-  Object.keys(books).map((book) => {
-    Object.keys(books[book]).map((detail) => {
+  Object.keys(books).forEach((book) => {
+    Object.keys(books[book]).forEach((detail) => {
       if (detail === 'author' && req.params.author === books[book].author) {
         booksByAuthor.push(books[book])
       }
