@@ -79,25 +79,30 @@ public_users.get('/author/:author',function (req, res) {
   }).catch(() => {
     res.status(400).json({message: "Books by this author not found"});
   });
-
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  let booksByTitle = [];
-  Object.keys(books).forEach((book) => {
-    Object.keys(books[book]).forEach((detail) => {
-      if (detail === 'author' && req.params.title === books[book].title) {
-        booksByTitle.push(books[book])
-      }
+  new Promise((resolve,reject) => {
+    let booksByTitle = [];
+    Object.keys(books).forEach((book) => {
+      Object.keys(books[book]).forEach((detail) => {
+        if (detail === 'title' && req.params.title === books[book].title) {
+          booksByTitle.push(books[book])
+        }
+      });
     });
-  });
-  if (booksByTitle.length === 0) {
-    res.status(400).json({message: "Books by this title not found"});
-  } else {
+    if (booksByTitle.length === 0) {
+      reject();
+    } else {
+      resolve(JSON.stringify(booksByTitle,null,4));
+    }
+  }).then((booksByTitle) => {
     res.status(200);
-    res.send(JSON.stringify(booksByTitle,null,4));
-  }
+    res.send(booksByTitle);
+  }).catch(() => {
+    res.status(400).json({message: "Books by this title not found"});
+  });
 });
 
 //  Get book review
