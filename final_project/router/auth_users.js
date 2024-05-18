@@ -55,7 +55,6 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     if (isbn === req.params.isbn) {
       books[isbn].reviews[req.session.authorization.username] = req.body.review;
       isbnFound = true;
-      console.log(req.body.review);
     }
   });
   if (!isbnFound) {
@@ -64,6 +63,21 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     return res.status(200).send("Review successfully added");
   }
 
+});
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  let isbnFound = false;
+  Object.keys(books).forEach((isbn) => {
+    if (isbn === req.params.isbn) {
+      delete books[isbn].reviews[req.session.authorization.username];
+      isbnFound = true;
+    }
+  });
+  if (!isbnFound) {
+    res.status(400).json({message: "Book by this isbn not found"});
+  } else {
+    return res.status(200).send("Review successfully deleted");
+  }
 });
 
 module.exports.authenticated = regd_users;
