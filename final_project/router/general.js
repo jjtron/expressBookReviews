@@ -45,8 +45,12 @@ public_users.get('/',function (req, res) {
 public_users.get('/isbn/:isbn',function (req, res) {
   const book = books[req.params.isbn];
   if (book) {
-    res.status(200);
-    res.send(JSON.stringify(book));
+    new Promise((resolve,reject) => {
+      resolve(JSON.stringify(book,null,4))
+    }).then((book) => {
+      res.status(200);
+      res.send(book);
+    });
   } else {
     res.status(400).json({message: "ISBN Not found"});
   }
